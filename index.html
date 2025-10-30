@@ -1,0 +1,36 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>ランダム画像ページ</title>
+  <style>
+    html,body{height:100%;margin:0;display:flex;align-items:center;justify-content:center;background:#111;color:#fff}
+    img{max-width:100%;max-height:100vh;border-radius:8px;box-shadow:0 8px 24px rgba(0,0,0,0.5)}
+    .loading {font-family:system-ui, -apple-system, "Segoe UI", Roboto; text-align:center}
+  </style>
+</head>
+<body>
+  <div id="root" class="loading">読み込み中…</div>
+
+  <script>
+  (async function(){
+    try {
+      const res = await fetch('./images.json?nocache=' + Date.now());
+      if (!res.ok) throw new Error('images.jsonが読み込めません');
+      const arr = await res.json();
+      if (!Array.isArray(arr) || arr.length === 0) throw new Error('画像リストが空です');
+      const chosen = arr[Math.floor(Math.random() * arr.length)];
+      const root = document.getElementById('root');
+      root.innerHTML = '';
+      const img = document.createElement('img');
+      img.src = chosen;
+      img.alt = 'ランダム画像';
+      root.appendChild(img);
+    } catch (e) {
+      document.getElementById('root').textContent = 'エラー: ' + e.message;
+    }
+  })();
+  </script>
+</body>
+</html>
